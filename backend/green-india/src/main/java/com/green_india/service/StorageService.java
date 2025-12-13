@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
@@ -21,17 +22,17 @@ public class StorageService {
 
     public String save(MultipartFile file) {
         try {
-            String orig = file.getOriginalFilename();
-            String ext = "";
-            if (orig != null && orig.contains(".")) {
-                ext = orig.substring(orig.lastIndexOf('.'));
-            }
-            String name = UUID.randomUUID().toString() + ext;
-            Path dest = root.resolve(name);
-            file.transferTo(dest.toFile());
-            return dest.toUri().toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            String filename = UUID.randomUUID() + "-" + file.getOriginalFilename();
+            Path uploadDir = Paths.get("uploads");
+            Files.createDirectories(uploadDir);
+
+            Path filePath = uploadDir.resolve(filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return filePath.toAbsolutePath().toString(); // ✅ THIS
+        } catch (Exception e) {
+            throw new RuntimeException("File save failed", e);
         }
     }
+
 }

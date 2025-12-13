@@ -1,0 +1,15 @@
+path: C:/Users/sahil/Documents/Green-India/green-india-dataset
+
+train: images/train
+val: images/val
+
+nc: 7
+
+names:
+  0: plastic_bottle
+  1: plastic_bag
+  2: plastic_container
+  3: glass_bottle
+  4: glass_container
+  5: aluminum_can
+  6: tin_can

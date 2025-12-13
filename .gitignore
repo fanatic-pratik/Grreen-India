@@ -1,0 +1,18 @@
+# Datasets
+*.zip
+green-india-dataset/
+dataset/
+datasets/
+*.pt
+runs/
+
+# .gitignore
+
+# Dependency Folders (Causes the conflicts you see)
+/frontend/node_modules/
+/backend/target/
+
+# IDE and Git Metadata (Addresses your Untracked files)
+.idea/
+# If the "Grreen-India/" untracked folder is the one you were having issues with earlier
+Grreen-India/

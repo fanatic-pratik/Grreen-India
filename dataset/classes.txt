@@ -1,0 +1,7 @@
+plastic_bottle
+plastic_container
+plastic_bag
+glass_bottle
+glass_container
+aluminum_can
+tin_can
