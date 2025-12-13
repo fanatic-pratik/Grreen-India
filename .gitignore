@@ -1,0 +1,7 @@
+# Datasets
+*.zip
+green-india-dataset/
+dataset/
+datasets/
+*.pt
+runs/
