@@ -15,9 +15,11 @@ public class EcoChallengeController {
     @Autowired
     private EcoPointsService ecoPointsService;
 
+
+
     @PostMapping("/daily-challenge/complete")
     public ResponseEntity<?> completeChallenge(@RequestParam Integer userId){
-        ecoPointsService.awardPoints(userId, "DAILY_CHALLENGE", 30);
+//        ecoPointsService.awardPoints(userId, "Daily challenge" , 30);
 
         return ResponseEntity.ok("Challenge completed. Points awarded");
     }

@@ -12,7 +12,7 @@ public class EcoPointTransaction {
     @ManyToOne
     private User user;
 
-    private String actionType;
+    private ChallengeCategory category;
     private int points;
 
     private LocalDateTime createdAt;
@@ -23,8 +23,8 @@ public class EcoPointTransaction {
     public User getUser() { return user;}
     public void setUser(User user) { this.user = user;}
 
-    public String getActionType() { return actionType;}
-    public void setActionType(String actionType) { this.actionType = actionType; }
+    public ChallengeCategory getCategory() { return category;}
+    public void setCategory(ChallengeCategory category) { this.category = category; }
 
     public int getPoints() { return points; }
     public void setPoints(int points) { this.points = points; }

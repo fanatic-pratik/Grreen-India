@@ -1,11 +1,10 @@
 package com.green_india.service;
 
-import com.green_india.entity.EcoBadge;
-import com.green_india.entity.EcoPointTransaction;
-import com.green_india.entity.User;
+import com.green_india.entity.*;
 import com.green_india.repository.EcoPointTransactionRepository;
 import com.green_india.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,26 +18,23 @@ public class EcoPointsService {
     @Autowired
     private EcoPointTransactionRepository transcationRepository;
 
-    public void awardPoints(Integer userId, String actionType, int points){
+    public void awardPoints(Long userId, Challenge challenge){
+        boolean alreadyRewarded = transcationRepository.existsByUserIdAndChallengeIdAndDate(userId, challenge.getId(), LocalDateTime.now());
+        if(alreadyRewarded) return;
+
         User user = userRepository.findById(userId).orElseThrow(() ->  new RuntimeException("User not found"));
 
-        if(actionType.equals("Daily Challenge")){
-            boolean alreadyOne = transcationRepository.
-                    existsByUserIdAndActionTypeAndCreatedAtBetween(userId, actionType, LocalDateTime.now());
-
-            if(alreadyOne) return;
-        }
+        int points = challenge.getPointsReward();
 
         user.setTotalPoints(user.getTotalPoints() + points);
-
-        EcoBadge newBadge = EcoBadge.fromPoints(user.getTotalPoints());
-        user.setBadge(newBadge);
+        user.setBadge(EcoBadge.fromPoints(user.getTotalPoints()));
 
         userRepository.save(user);
 
+
         EcoPointTransaction txn = new EcoPointTransaction();
         txn.setUser(user);
-        txn.setActionType(actionType);
+        txn.setCategory(challenge.getCategory());
         txn.setPoints(points);
         txn.setCreatedAt(LocalDateTime.now());
 
