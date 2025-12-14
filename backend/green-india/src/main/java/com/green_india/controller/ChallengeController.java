@@ -39,7 +39,7 @@ public class ChallengeController {
     @PostMapping("/{challengeId}/complete")
     public ResponseEntity<String> completeChallenge(@PathVariable Long challengeId) {
         try {
-            challengeService.completeChallenge(TEST_USER_ID, challengeId);
+            challengeService.completeChallenge(TEST_USER_ID, challengeId );
             return ResponseEntity.ok("Challenge completed! You earned the reward.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body(e.getMessage());

@@ -1,6 +1,7 @@
 package com.green_india.service;
 
 import com.green_india.entity.Challenge;
+import com.green_india.entity.ChallengeCategory;
 import com.green_india.entity.UserChallengeLog;
 import com.green_india.repository.ChallengeRepository;
 import com.green_india.repository.UserChallengeLogRepository;
@@ -20,6 +21,9 @@ public class ChallengeService {
 
     @Autowired
     private UserChallengeLogRepository userChallengeLogRepository;
+
+    @Autowired
+    private EcoPointsService ecoPointsService;
 
     // Assuming a separate service to update user points for the Leaderboard feature
     // @Autowired
@@ -85,8 +89,9 @@ public class ChallengeService {
             log.setCompletedDate(LocalDateTime.now());
             userChallengeLogRepository.save(log);
 
-            // 5. Award points (for Feature 1: Leaderboard)
-            // userService.addPoints(userId, challenge.getPointsReward());
+            ecoPointsService.awardPoints(userId, challenge );
+
+
 
         } else {
             throw new IllegalArgumentException("The provided challengeId does not match the challenge assigned for today.");
