@@ -1,33 +1,112 @@
-import { Link } from "react-router-dom";
+// src/components/Register.jsx
+
+import { useState } from "react"; // 1. Import useState
+import { Link, useNavigate } from "react-router-dom"; // 2. Import useNavigate
+import { registerUser } from "../services/authService"; // 3. Import the service
 
 const Register = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-green-100">
-      <div className="bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-2 text-center">
-          Join Green India 🌍
-        </h2>
-        <p className="text-gray-500 text-center mb-6">
-          Start your journey toward sustainability
-        </p>
+    // 4. State for form inputs and error/loading status
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+    });
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    
+    const navigate = useNavigate(); // Hook for redirection
 
-        <input className="w-full mb-3 p-3 border rounded-lg" placeholder="Name" />
-        <input className="w-full mb-3 p-3 border rounded-lg" placeholder="Email" />
-        <input className="w-full mb-6 p-3 border rounded-lg" placeholder="Password" />
+    // 5. Handle input changes
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-        <button className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700">
-          Create Account
-        </button>
+    // 6. Handle form submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setIsLoading(true);
 
-        <p className="text-sm text-center text-gray-500 mt-6">
-          Already have an account?{" "}
-          <Link to="/login" className="text-primary-600 font-semibold">
-            Login
-          </Link>
-        </p>
-      </div>
-    </div>
-  );
+        try {
+            // Call the service function
+            await registerUser(formData.name, formData.email, formData.password);
+            
+            // Success: Token stored, redirect to home or dashboard
+            alert("Registration successful! Redirecting to Dashboard.");
+            navigate("/"); 
+
+        } catch (err) {
+            // Failure: Display error message
+            setError(err.message || "An unknown error occurred during registration.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-green-100">
+            <div className="bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md">
+                <h2 className="text-3xl font-bold mb-2 text-center">
+                    Join Green India 🌍
+                </h2>
+                <p className="text-gray-500 text-center mb-6">
+                    Start your journey toward sustainability
+                </p>
+
+                {/* 7. Error Message Display */}
+                {error && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
+                
+                {/* 8. Attach onSubmit handler to a form element */}
+                <form onSubmit={handleSubmit}>
+                    <input 
+                        className="w-full mb-3 p-3 border rounded-lg" 
+                        placeholder="Name" 
+                        name="name" // Use name attribute for identification
+                        value={formData.name} 
+                        onChange={handleChange}
+                        required
+                    />
+                    <input 
+                        className="w-full mb-3 p-3 border rounded-lg" 
+                        placeholder="Email" 
+                        name="email" // Use name attribute
+                        type="email" 
+                        value={formData.email} 
+                        onChange={handleChange}
+                        required
+                    />
+                    <input 
+                        className="w-full mb-6 p-3 border rounded-lg" 
+                        placeholder="Password" 
+                        name="password" // Use name attribute
+                        type="password" 
+                        value={formData.password} 
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <button 
+                        className="w-full bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 disabled:opacity-50"
+                        type="submit" // Set type to submit
+                        disabled={isLoading} // Disable while loading
+                    >
+                        {isLoading ? 'Creating Account...' : 'Create Account'}
+                    </button>
+                </form>
+
+                <p className="text-sm text-center text-gray-500 mt-6">
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-primary-600 font-semibold">
+                        Login
+                    </Link>
+                </p>
+            </div>
+        </div>
+    );
 };
 
 export default Register;
