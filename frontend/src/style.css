@@ -1,0 +1,82 @@
+/* style.css */
+
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+}
+
+h1 {
+    color: #2e8b57; /* Sea Green */
+    border-bottom: 2px solid #3cb371;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.challenge-card {
+    border: 1px solid #c8e6c9;
+    background-color: #e8f5e9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: left;
+}
+
+.challenge-card h2 {
+    color: #4682b4; /* Steel Blue */
+    margin-top: 0;
+}
+
+.points {
+    color: #ff8c00; /* Dark Orange */
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+button {
+    background-color: #2e8b57;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 25px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3cb371;
+}
+
+button:disabled {
+    background-color: #9e9e9e;
+    cursor: not-allowed;
+}
+
+.status-message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.info {
+    background-color: #cce5ff;
+    color: #004085;
+}

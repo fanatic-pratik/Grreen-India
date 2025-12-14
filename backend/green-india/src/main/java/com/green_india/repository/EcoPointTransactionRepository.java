@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 
-public interface EcoPointTransactionRepository extends JpaRepository<EcoPointTransaction, Integer> {
+public interface EcoPointTransactionRepository extends JpaRepository<EcoPointTransaction, Long> {
 
-    boolean existsByUserIdAndActionTypeAndCreatedAtBetween(
-        Integer userId,
-        String actionType,
+    boolean existsByUserIdAndCategoryAndCreatedAtBetween(
+        Long userId,
+        ChallengeCategory category,
         LocalDateTime startTime, // <-- Start of the range
         LocalDateTime endTime      // <-- End of the range
     );

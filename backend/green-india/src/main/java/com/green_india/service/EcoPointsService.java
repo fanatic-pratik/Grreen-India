@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime; // <-- ADD THIS IMPORT
 
@@ -20,7 +21,10 @@ public class EcoPointsService {
     private EcoPointTransactionRepository transcationRepository;
 
     public void awardPoints(Long userId, Challenge challenge){
-        boolean alreadyRewarded = transcationRepository.existsByUserIdAndChallengeIdAndDate(userId, challenge.getId(), LocalDateTime.now());
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+        boolean alreadyRewarded = transcationRepository.existsByUserIdAndCategoryAndCreatedAtBetween(userId, challenge.getCategory(), startOfDay, endOfDay);
         if(alreadyRewarded) return;
 
 

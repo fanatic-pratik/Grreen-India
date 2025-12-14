@@ -1,54 +1,88 @@
 package com.green_india.config;
 
+// Cleaned up Imports
+import com.green_india.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.authentication.AuthenticationProvider; // <--- ADD THIS IMPORT
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
-
-// Assume JwtAuthenticationFilter is defined later (we'll create it in the next step)
-import com.green_india.security.JwtAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter; // Still needed if you use the CorsFilter bean, but typically not required here.
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtAuthFilter; // Make it final and use constructor injection
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthFilter;
-
-    // The constructor needs to include the dependency
-    public SecurityConfig(AuthenticationProvider authenticationProvider) {
+    // FIX: Use constructor injection for all final dependencies
+    public SecurityConfig(
+            AuthenticationProvider authenticationProvider,
+            JwtAuthenticationFilter jwtAuthFilter // FIX: Inject the actual filter bean
+    ) {
         this.authenticationProvider = authenticationProvider;
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
+    // This method now correctly integrates CORS and applies the security chain.
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
-                .authorizeHttpRequests(auth -> auth
-                        // Public endpoints: Allow anyone to access Auth and Swagger docs
-                        .requestMatchers("/api/auth/**", "/h2-console/**", "/swagger-ui/**").permitAll()
 
-                        // Allow any request to /api/users/** if the user has the ROLE_USER
-                        .requestMatchers("/api/users/**").hasAuthority("ROLE_USER") // <-- FIX: Check for the authority
+        http
+                // 1. INTEGRATE CORS: Use the modern .cors() configuration
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                .csrf(csrf -> csrf.disable())
+
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/h2-console/**",
+                                "/swagger-ui/**",
+                                "/api/challenges/daily" // Assuming challenge read is public or requires minimal security
+                        ).permitAll()
+
+                        // User-specific endpoints
+                        .requestMatchers("/api/users/**").hasAuthority("ROLE_USER")
+
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
+
                 .sessionManagement(session -> session
-                        // Use STATELESS sessions (crucial for JWT)
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter before Spring's default
+
+                // FIX: Use the correct filter class name
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+    // This Bean is necessary for the .cors() method in the security chain.
+    @Bean
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+
+        config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
+
+        source.registerCorsConfiguration("/api/**", config);
+        return source;
+    }
+
+    // Note: If you defined your AuthenticationProvider bean in this class before,
+    // you need to ensure it's still present, or imported correctly if defined elsewhere.
 }

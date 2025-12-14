@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import HowItWorks from './pages/HowItWorks';
 import Impact from './pages/Impact';
 import FAQ from './pages/FAQ';
+import ChallengePage from './pages/ChallengeApp.jsx'; // <-- New import
 function App() {
   return (
     <Router>
@@ -26,6 +27,7 @@ function App() {
           <Route path="/impact" element={<Impact/>}/>
           <Route path="/register" element={<Register/>}/>
           <Route path="/faq" element={<FAQ/>}/>
+          <Route path="/challenge" element={<ChallengePage />} /> {/* <-- New Route */}
           <Route path="/how-it-works" element={<HowItWorks/>}/>
 
         </Routes>

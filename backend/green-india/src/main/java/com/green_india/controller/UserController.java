@@ -21,7 +21,7 @@ public class UserController {
      * REQUIRES: JWT
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable Integer id) {
+    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable Long id) {
         // NOTE: In a real app, you would verify the JWT user ID matches the {id} path variable, 
         // unless they are an admin. For simplicity, we just fetch the data.
         UserProfileDTO profile = userService.getUserProfile(id);
@@ -34,7 +34,7 @@ public class UserController {
      * REQUIRES: JWT
      */
     @PutMapping("/{id}")
-    public ResponseEntity<UserProfileDTO> updateUserProfile(@PathVariable Integer id, @RequestBody UserUpdateDTO updateDTO) {
+    public ResponseEntity<UserProfileDTO> updateUserProfile(@PathVariable Long id, @RequestBody UserUpdateDTO updateDTO) {
         // Again, verify the request is from the authenticated user before allowing update
         UserProfileDTO updatedProfile = userService.updateUserProfile(id, updateDTO);
         return ResponseEntity.ok(updatedProfile);
@@ -46,7 +46,7 @@ public class UserController {
      * REQUIRES: JWT
      */
     @GetMapping("/{id}/badge")
-    public EcoBadge getUserBadge(@PathVariable Integer id){
+    public EcoBadge getUserBadge(@PathVariable Long id){
         // Fetch the full DTO and return just the badge
         return userService.getUserProfile(id).getBadge();
     }

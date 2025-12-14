@@ -13,7 +13,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public UserProfileDTO getUserProfile(Integer userId) {
+    public UserProfileDTO getUserProfile(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
 
@@ -30,7 +30,7 @@ public class UserService {
         return dto;
     }
 
-    public UserProfileDTO updateUserProfile(Integer userId, UserUpdateDTO updateDTO) {
+    public UserProfileDTO updateUserProfile(Long userId, UserUpdateDTO updateDTO) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found: " + userId));
 
