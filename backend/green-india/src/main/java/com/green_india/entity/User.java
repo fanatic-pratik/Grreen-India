@@ -1,13 +1,22 @@
 package com.green_india.entity;
 
-
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+// ADD IMPORTS FOR SPRING SECURITY
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 @Entity
 @Table(name = "users")
-public class User {
+// IMPLEMENT THE USERDETAILS INTERFACE
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -18,6 +27,7 @@ public class User {
     private String email;
 
     private String passwordHash;
+
 
     @Column(columnDefinition = "json")
     private String prefs;
@@ -31,8 +41,41 @@ public class User {
     @Enumerated(EnumType.STRING)
     private EcoBadge badge;
 
+    // Default role for Spring Security
+    private String role = "USER";
 
-    // getters / setters
+
+    // --- UserDetails Interface Implementation ---
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Simple fixed role for the application's base user
+        //return List.of(() -> role);
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return email; // Use email as the identifier for Spring Security
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordHash; // Returns the hashed password for comparison
+    }
+
+    // Standard flags for active users
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+    @Override
+    public boolean isEnabled() { return true; }
+
+
+    // --- Existing Getters / Setters ---
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public String getName() { return name; }
@@ -57,4 +100,8 @@ public class User {
 
     public EcoBadge getBadge() { return badge;}
     public void setBadge(EcoBadge badge) { this.badge = badge;}
+
+    // New getter/setter for the role field
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

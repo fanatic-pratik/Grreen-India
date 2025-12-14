@@ -9,6 +9,7 @@ public interface EcoPointTransactionRepository extends JpaRepository<EcoPointTra
     boolean existsByUserIdAndActionTypeAndCreatedAtBetween(
         Integer userId,
         String actionType,
-        LocalDateTime createdAt
+        LocalDateTime startTime, // <-- Start of the range
+        LocalDateTime endTime      // <-- End of the range
     );
 }
