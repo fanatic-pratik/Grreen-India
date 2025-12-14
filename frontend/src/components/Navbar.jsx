@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 import { logoutUser } from "../services/authService"; // Import the logout function
+import { toast } from "react-toastify"; // <<< 3. IMPORT TOAST HERE
 
 const Navbar = () => {
     const location = useLocation();
@@ -18,7 +19,7 @@ const Navbar = () => {
         logoutUser(); // This removes the JWT from localStorage
         
         // Optional: Add a simple confirmation alert
-        alert("You have been logged out.");
+        toast.success("Logout successful! 🌱");
 
         // Redirect to the login page or home page
         navigate("/login"); 

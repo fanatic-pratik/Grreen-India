@@ -1,8 +1,7 @@
-// src/components/Register.jsx
-
-import { useState } from "react"; // 1. Import useState
-import { Link, useNavigate } from "react-router-dom"; // 2. Import useNavigate
-import { registerUser } from "../services/authService"; // 3. Import the service
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "../services/authService";
+import { toast } from "react-toastify"; // <<< 3. IMPORT TOAST HERE
 
 const Register = () => {
     // 4. State for form inputs and error/loading status
@@ -31,12 +30,13 @@ const Register = () => {
             // Call the service function
             await registerUser(formData.name, formData.email, formData.password);
             
-            // Success: Token stored, redirect to home or dashboard
-            alert("Registration successful! Redirecting to Dashboard.");
-            navigate("/"); 
+            // ** SUCCESS: Replaced alert() with toast.success() **
+            toast.success("Registration successful! Welcome to Green India! 🌱");
+            navigate("/"); // Redirecting to /dashboard as planned
 
         } catch (err) {
             // Failure: Display error message
+            // Note: The error display in the component remains the same, but the error source is the backend.
             setError(err.message || "An unknown error occurred during registration.");
         } finally {
             setIsLoading(false);

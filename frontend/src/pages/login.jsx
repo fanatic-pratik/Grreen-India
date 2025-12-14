@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../services/authService"; // Import the login function
+import { loginUser } from "../services/authService";
+import { toast } from "react-toastify"; // <<< IMPORT TOAST HERE
 
 const Login = () => {
     // State to hold the form data (email and password)
@@ -31,9 +32,11 @@ const Login = () => {
             // Call the service function to authenticate and store the token
             await loginUser(formData.email, formData.password);
             
-            // Success: Redirect the user to the secured dashboard
+            // ** SUCCESS: Replaced alert() with toast.success() **
+            toast.success("Login successful! Welcome back 🌱");
             console.log("Login successful. JWT stored.");
-            alert("Login successful! Redirecting to Dashboard.");
+            
+            // Redirect to the secured dashboard
             navigate("/"); 
 
         } catch (err) {
